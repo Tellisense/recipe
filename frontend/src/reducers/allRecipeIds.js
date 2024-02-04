@@ -1,40 +1,42 @@
 import {
-  FETCH_RECIPE_BEGIN,
-  FETCH_RECIPE_SUCCESS,
-  FETCH_RECIPE_FAILURE,
+  FETCH_ALL_RECIPE_IDS_BEGIN,
+  FETCH_ALL_RECIPE_IDS_SUCCESS,
+  FETCH_ALL_RECIPE_IDS_FAILURE,
 } from "../actions/types"
 
 const initialState = {
-  items: [],
+  ids: [],
   loading: false,
   error: null,
 }
 
-export default function recipeReducer(state = initialState, action) {
+function allRecipeIdsReducer(state = initialState, action) {
   switch (action.type) {
-    case FETCH_RECIPE_BEGIN:
+    case FETCH_ALL_RECIPE_IDS_BEGIN:
       return {
         ...state,
         loading: true,
         error: null,
       }
 
-    case FETCH_RECIPE_SUCCESS:
+    case FETCH_ALL_RECIPE_IDS_SUCCESS:
       return {
         ...state,
         loading: false,
-        items: action.payload.recipe,
+        ids: action.payload.ids,
       }
 
-    case FETCH_RECIPE_FAILURE:
+    case FETCH_ALL_RECIPE_IDS_FAILURE:
       return {
         ...state,
         loading: false,
         error: action.payload.error,
-        items: [],
+        ids: [],
       }
 
     default:
       return state
   }
 }
+
+export default allRecipeIdsReducer

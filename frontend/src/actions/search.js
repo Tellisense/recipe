@@ -1,39 +1,43 @@
-export const GET_SEARCH = "GET_SEARCH"
-export const RECEIVE_SEARCH = "RECEIVE_SEARCH"
-export const FAIL_SEARCH = "FAIL_SEARCH"
+import {
+  SEARCH_RECIPES_BEGIN,
+  SEARCH_RECIPES_SUCCESS,
+  SEARCH_RECIPES_FAILURE,
+} from "./types"
 
-const fetchingSearch = () => ({
-  type: GET_SEARCH,
+export const getSearch = () => ({
+  type: SEARCH_RECIPES_BEGIN,
 })
 
-const fetchedSearch = (payload) => ({
-  type: RECEIVE_SEARCH,
-  payload,
+export const receiveSearch = (results) => ({
+  type: SEARCH_RECIPES_SUCCESS,
+  payload: results,
 })
 
-const failedSearch = (payload) => ({
-  type: FAIL_SEARCH,
-  payload,
+export const failSearch = (error) => ({
+  type: SEARCH_RECIPES_FAILURE,
+  payload: error,
 })
 
-export const executeSearch = async (name, ingredients) => {
-  const response = await fetch("/api/search", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ name, ingredients }),
-  })
-  const searchResults = await response.json()
-  return searchResults
-}
-
-// TODO: fix action
-export const searchRecipes = (name, ingredients) => {
+export const performSearch = (query) => {
   return (dispatch) => {
-    dispatch(fetchingSearch())
-    return executeSearch(name, ingredients)
-      .then((res) => fetchedSearch(res))
-      .catch((err) => dispatch(failedSearch(err)))
+    dispatch(getSearch())
+    return fetch(`/api/search?query=${encodeURIComponent(query)}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok")
+        }
+        return response.json()
+      })
+      .then((data) => {
+        dispatch(receiveSearch(data))
+      })
+      .catch((error) => {
+        dispatch(failSearch(error.toString()))
+      })
   }
 }
