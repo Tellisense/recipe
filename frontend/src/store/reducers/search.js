@@ -2,24 +2,24 @@ import {
   SEARCH_RECIPES_BEGIN,
   SEARCH_RECIPES_SUCCESS,
   SEARCH_RECIPES_FAILURE,
-} from "../actions/types"
+} from "../types"
 
 const initialState = {
-  recipes: null,
-  isLoading: false,
+  data: null,
+  loading: false,
   error: null,
 }
 
 const searchFetching = (state) => {
-  return { ...state, isLoading: true }
+  return { ...state, loading: true }
 }
 
 const searchFetched = (state, payload) => {
-  return { ...state, isLoading: false, recipes: payload }
+  return { ...state, loading: false, data: payload }
 }
 
 const searchFailed = (state, payload) => {
-  return { ...state, isLoading: false, error: payload }
+  return { ...state, loading: false, error: payload }
 }
 
 export default (state = initialState, { type, payload }) => {

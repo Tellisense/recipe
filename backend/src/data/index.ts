@@ -110,5 +110,3 @@ export const builtRecipes = recipeNames.map((name) => {
     ingredients,
   }
 })
-
-console.log(`builtRecipes: `, builtRecipes)

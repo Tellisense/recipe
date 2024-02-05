@@ -2,7 +2,7 @@ import {
   SEARCH_RECIPES_BEGIN,
   SEARCH_RECIPES_SUCCESS,
   SEARCH_RECIPES_FAILURE,
-} from "./types"
+} from "../types"
 
 export const getSearch = () => ({
   type: SEARCH_RECIPES_BEGIN,
@@ -10,7 +10,7 @@ export const getSearch = () => ({
 
 export const receiveSearch = (results) => ({
   type: SEARCH_RECIPES_SUCCESS,
-  payload: results,
+  payload: { data: results },
 })
 
 export const failSearch = (error) => ({
@@ -18,14 +18,15 @@ export const failSearch = (error) => ({
   payload: error,
 })
 
-export const performSearch = (query) => {
+export const performSearch = ({ term, ingredients }) => {
   return (dispatch) => {
     dispatch(getSearch())
-    return fetch(`/api/search?query=${encodeURIComponent(query)}`, {
-      method: "GET",
+    return fetch(`/api/search`, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({ term, ingredients }),
     })
       .then((response) => {
         if (!response.ok) {

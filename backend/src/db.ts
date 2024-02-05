@@ -7,7 +7,7 @@ const createRecipes = async (): Promise<void> => {
   try {
     await RecipeModel.insertMany(builtRecipes)
   } catch (err) {
-    console.log("Creation Issue: ", err)
+    console.error("Creation Issue: ", err)
   }
 }
 

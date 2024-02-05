@@ -9,42 +9,28 @@ const escapeRegex = (text): string => {
 
 interface Query {
   name?: RegExp
-  "ingredients.name"?: any // Adjusted for MongoDB query structure
+  ingredients?: Ingredient[]
 }
 
 const recipeCleaner = (recipe): { id: string; name: string } => {
-  const { _id, name } = recipe // Changed id to _id to match MongoDB's default
-  return { id: _id.toString(), name } // Convert _id to string
+  const { id, name } = recipe
+  return { _id: id, name }
 }
 
 export const searchMiddleware = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  try {
-    const { name, ingredients } = req.body
-
-    if (!name && (!ingredients || ingredients.length === 0)) {
-      res.status(400).json({ message: "No search parameters provided." })
-      return
-    }
-
-    const query: Query = {}
-    if (name) {
-      query.name = new RegExp(escapeRegex(name), "gi")
-    }
-    if (ingredients) {
-      const whatsLeft = allIngredients.filter(
-        (ing) => !ingredients.includes(ing)
-      )
-      query["ingredients.name"] = { $nin: whatsLeft }
-    }
-
-    const foundRecipes = await RecipeModel.find(query)
-    const builtRecipes = foundRecipes.map(recipeCleaner)
-    res.status(200).json(builtRecipes)
-  } catch (error) {
-    console.error(error)
-    res.status(500).json({ message: "Internal server error" })
+  const { name, ingredients } = req.body
+  const query: Query = {}
+  if (name) {
+    query.name = new RegExp(escapeRegex(name), "gi")
   }
+  if (ingredients) {
+    const whatsLeft = allIngredients.filter((ing) => !ingredients.includes(ing))
+    query["ingredients.name"] = { $nin: whatsLeft }
+  }
+  const foundRecipes = await RecipeModel.find(query)
+  const builtRecipes = foundRecipes.map(recipeCleaner)
+  res.send(builtRecipes)
 }

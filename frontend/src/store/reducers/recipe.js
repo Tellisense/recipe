@@ -2,10 +2,10 @@ import {
   FETCH_RECIPE_BEGIN,
   FETCH_RECIPE_SUCCESS,
   FETCH_RECIPE_FAILURE,
-} from "../actions/types"
+} from "../types"
 
 const initialState = {
-  items: [],
+  data: [],
   loading: false,
   error: null,
 }
@@ -23,7 +23,7 @@ export default function recipeReducer(state = initialState, action) {
       return {
         ...state,
         loading: false,
-        items: action.payload.recipe,
+        data: action.payload.data,
       }
 
     case FETCH_RECIPE_FAILURE:
@@ -31,7 +31,7 @@ export default function recipeReducer(state = initialState, action) {
         ...state,
         loading: false,
         error: action.payload.error,
-        items: [],
+        data: [],
       }
 
     default:

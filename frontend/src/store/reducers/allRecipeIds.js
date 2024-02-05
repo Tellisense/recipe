@@ -2,10 +2,10 @@ import {
   FETCH_ALL_RECIPE_IDS_BEGIN,
   FETCH_ALL_RECIPE_IDS_SUCCESS,
   FETCH_ALL_RECIPE_IDS_FAILURE,
-} from "../actions/types"
+} from "../types"
 
 const initialState = {
-  ids: [],
+  data: [],
   loading: false,
   error: null,
 }
@@ -23,7 +23,7 @@ function allRecipeIdsReducer(state = initialState, action) {
       return {
         ...state,
         loading: false,
-        ids: action.payload.ids,
+        data: action.payload.data,
       }
 
     case FETCH_ALL_RECIPE_IDS_FAILURE:
@@ -31,7 +31,7 @@ function allRecipeIdsReducer(state = initialState, action) {
         ...state,
         loading: false,
         error: action.payload.error,
-        ids: [],
+        data: [],
       }
 
     default:

@@ -17,20 +17,15 @@ export const recipeMiddleware = async (
 
   try {
     const theId: dbId = new mongoose.Types.ObjectId(reqQueryId)
-    const dbQueryResults = await RecipeModel.find({ _id: theId }).lean()
+    const dbQueryResult = await RecipeModel.findOne({ _id: theId })
+      .select("_id name instructions ingredients")
+      .lean()
 
-    if (dbQueryResults.length === 0) {
+    if (!dbQueryResult) {
       return res.status(404).json({ message: "Recipe not found" })
     }
 
-    const responseResults = dbQueryResults.map(
-      ({ name, instructions, ingredients }) => ({
-        name,
-        instructions,
-        ingredients,
-      })
-    )
-    res.status(200).json(responseResults)
+    res.status(200).json(dbQueryResult)
   } catch (error) {
     console.error(error)
     res.status(500).json({ message: "Server error" })
